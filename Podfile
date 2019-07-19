@@ -1,8 +1,12 @@
-target "CleverSDK" do
-  platform :ios, "9.0"
-  inhibit_all_warnings!
-  podspec
+platform :ios, "9.0"
 
+inhibit_all_warnings!
+
+target "CleverSDK" do
+  
+  pod "PocketSVG", "~> 0.7"
+  pod "SmartWKWebView", :git => "https://github.com/gintechsystems/SmartWKWebView.git"
+  
   target "CleverSDKTests" do
     inherit! :search_paths
 

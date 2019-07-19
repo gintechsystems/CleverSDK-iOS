@@ -25,6 +25,7 @@ Pod::Spec.new do |s|
   s.public_header_files = "CleverSDK/**/*.h"
   s.source_files = "CleverSDK/**/*"
   s.exclude_files = "CleverSDK/**/*.plist"
-
+  
   s.dependency "PocketSVG", "~> 0.7"
+  s.dependency "SmartWKWebView"
 end

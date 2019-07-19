@@ -1,11 +1,14 @@
 #import <Foundation/Foundation.h>
 #import <SafariServices/SafariServices.h>
+#import <WebKit/WebKit.h>
 
 #import "CleverLoginButton.h"
 
 #define SDK_VERSION @"iOS-2.0.0"
 
-@interface CleverSDK : NSObject
+@import SmartWKWebView;
+
+@interface CleverSDK : NSObject <SmartWKWebViewControllerDelegate>
 
 + (void)startWithClientId:(NSString *)clientId LegacyIosClientId:(NSString *)legacyIosClientId RedirectURI:(NSString *)redirectUri successHandler:(void (^)(NSString *code, BOOL validState))successHandler failureHandler:(void (^)(NSString *errorMessage))failureHandler;
 

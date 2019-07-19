@@ -1,6 +1,6 @@
 #import "CleverSDK.h"
 
-@interface CleverSDK ()
+@interface CleverSDK () 
 
 @property (nonatomic, strong) NSString *clientId;
 @property (nonatomic, strong) NSString *legacyIosClientId;
@@ -104,8 +104,10 @@
     
     // If a view controller parameter value was passed to this method, we want to present the safari view controller instead of opening the safari app.
     if (manager.viewController) {
-        SFSafariViewController *svc = [[SFSafariViewController alloc] initWithURL:[NSURL URLWithString:webURLString]];
-        [manager.viewController presentViewController:svc animated:YES completion:nil];
+        SmartWKWebViewController *smart = [[SmartWKWebViewController alloc] init];
+        smart.url = [NSURL URLWithString:webURLString];
+        [smart setDelegate:manager];
+        [manager.viewController presentViewController:smart animated:YES completion:nil];
         return;
     }
     
@@ -121,7 +123,7 @@
     CleverSDK *manager = [self sharedManager];
 
     NSURL *redirectURL = [NSURL URLWithString:manager.redirectUri];
-
+    
     if (!(
         [url.scheme isEqualToString:[NSString stringWithFormat:@"clever-%@", manager.legacyIosClientId]] || (
             [url.scheme isEqualToString:redirectURL.scheme] &&
@@ -162,6 +164,17 @@
     
     manager.successHandler(code, validState);
     return YES;
+}
+    
+- (void)decidePolicyWithWebView:(WKWebView *)webView navigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+    // Check for Clever code in the upcoming request URL, if it is available then let Clever manager handle it.
+    if ([navigationAction.request.URL.absoluteString containsString:@"code="]) {
+        [CleverSDK handleURL:navigationAction.request.URL];
+        decisionHandler(WKNavigationActionPolicyCancel);
+        return;
+    }
+    
+    decisionHandler(WKNavigationActionPolicyAllow);
 }
 
 @end
